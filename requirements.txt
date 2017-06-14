@@ -1,0 +1,4 @@
+#
+# Install this package
+#
+#-e . # install.py does not exist yet, so commenting for now
