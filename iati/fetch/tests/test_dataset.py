@@ -18,4 +18,9 @@ class TestDataset(object):
         with requests_mock.Mocker() as m:
             mock_Metadata = pkg_resources.resource_stream(__name__, 'mock-registry-metadata.json').read().decode()
             m.get('https://iatiregistry.org/api/3/action/package_show?id=sample', text=mock_Metadata)
-            assert iati.fetch.get_metadata(dataset_id='sample') == {'result': {'resources': [{'url': 'https://www.vsointernational.org/sites/default/files/aasaman_gec.xml'}]}}
+            assert iati.fetch.get_metadata(dataset_id='sample') == {'result': {
+                'resources': [
+                    {'url': 'https://www.vsointernational.org/sites/default/files/aasaman_gec.xml'}
+                    ]
+                }
+            }
