@@ -1,4 +1,5 @@
 #
 # Install this package
 #
+-e git://github.com/IATI/iati.core.git#egg=iati.core
 -e .
