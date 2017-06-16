@@ -17,7 +17,8 @@ class TestDataset(object):
     def test_get_metadata(self, **kwargs):
         """Given a mock registry ID, metadata will be returned."""
         mock_metadata = pkg_resources.resource_stream(__name__, 'mock-registry-metadata.json').read().decode()
-        kwargs['mock'].get('https://iatiregistry.org/api/3/action/package_show?id=sample', text=mock_metadata)
+        mock_registry_url = iati.fetch.REGISTRY_API_METADATA_BY_DATASET_ID.format('sample')
+        kwargs['mock'].get(mock_registry_url, text=mock_metadata)
         assert iati.fetch.get_metadata(dataset_id='sample') == {'result': {
             'resources': [
                 {'url': 'https://www.vsointernational.org/sites/default/files/aasaman_gec.xml'}
