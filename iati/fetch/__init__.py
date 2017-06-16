@@ -8,7 +8,11 @@ class Dataset(object):
     """Container class to fetch a dataset."""
 
     def __init__(self, dataset_id):
-        """Fetch a dataset by registry dataset ID."""
+        """Fetch a dataset by registry dataset ID.
+
+        Args:
+            dataset_id (str): The Registry UUID for the dataset.
+        """
         self.dataset_id = dataset_id
         self.dataset = None
 
@@ -21,7 +25,17 @@ class Dataset(object):
 
 
 def get_metadata(dataset_id):
-    """Get registry metadata for given dataset ID."""
+    """Get registry metadata for given dataset ID.
+
+    Args:
+        dataset_id (str): The Registry UUID for the dataset metadata to be returned.
+
+    Raises:
+        Exception: When a HTTP 200 response code is not received.
+
+    Returns:
+        dict: A dictionary containing the data returned by the Registry API.
+    """
     req = requests.get("https://iatiregistry.org/api/3/action/package_show?id={0}".format(dataset_id))
     if not is_response_okay(req):
         raise Exception()
@@ -31,7 +45,17 @@ def get_metadata(dataset_id):
 
 
 def get_dataset(dataset_url):
-    """Get dataset from dataset URL."""
+    """Get dataset from dataset URL.
+
+    Raises:
+        Exception: When a HTTP 200 response code is not received.
+
+    Args:
+        dataset_url (str): The URL of the dataset to be returned.
+
+    Returns:
+        str: The data contained at the dataset_url.
+    """
     dataset = requests.get(dataset_url)
     if not is_response_okay(dataset):
         raise Exception()
@@ -40,7 +64,17 @@ def get_dataset(dataset_url):
 
 
 def is_response_okay(request):
-    """Check for network failure."""
+    """Check for network failure.
+
+    Args:
+        request (requests.Response): A Response object, generated from a request.
+
+    Returns:
+        bool: True is the HTTP status code is 200, or False otherwise.
+
+    Todo:
+        Delete this function and use builtin requests.status.ok instead.
+    """
     if request.status_code != 200:
         return False
     else:
