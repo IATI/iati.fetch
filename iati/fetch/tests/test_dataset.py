@@ -1,11 +1,26 @@
 """A module containing tests for the library functionality to fetch datasets."""
-import iati.fetch
 import pkg_resources
+import pytest
 import requests_mock
+import iati.fetch
 
 
 class TestDataset(object):
     """Container for tests relating fetch.Dataset."""
+
+    @pytest.fixture
+    @requests_mock.Mocker(kw='mock')
+    def mock_registry_metadata(self, **kwargs):  # Needs to be generisised.
+        """Mock for registry metadata and returns specific dataset_url.
+
+        Todo:
+          Remove use of live URL in mock metadata.
+        """
+        mock_metadata = pkg_resources.resource_stream(__name__, 'mock-registry-metadata.json').read().decode()
+        mock_registry_url = iati.fetch.REGISTRY_API_METADATA_BY_DATASET_ID.format('sample')
+        kwargs['mock'].get(mock_registry_url, text=mock_metadata)
+        mock_registry_metadata = iati.fetch.get_metadata(dataset_id='sample')
+        return mock_registry_metadata
 
     def test_fetch_by_dataset_id(self):
         """Given a dataset_id, metadata for this dataset will be populated.
@@ -17,17 +32,9 @@ class TestDataset(object):
         sample_dataset.set_dataset()
         assert isinstance(sample_dataset.dataset, iati.core.data.Dataset)
 
-    @requests_mock.Mocker(kw='mock')
-    def test_get_metadata(self, **kwargs):
-        """Given a mock registry ID, metadata will be returned.
-
-        Todo:
-          Remove use of live URL in mock metadata.
-        """
-        mock_metadata = pkg_resources.resource_stream(__name__, 'mock-registry-metadata.json').read().decode()
-        mock_registry_url = iati.fetch.REGISTRY_API_METADATA_BY_DATASET_ID.format('sample')
-        kwargs['mock'].get(mock_registry_url, text=mock_metadata)
-        assert iati.fetch.get_metadata(dataset_id='sample') == {'result': {
+    def test_get_metadata(self, mock_registry_metadata):
+        """Given a mock registry ID, metadata will be returned."""
+        assert mock_registry_metadata == {'result': {
             'resources': [
                 {'url': 'https://www.vsointernational.org/sites/default/files/aasaman_gec.xml'}
                 ]
