@@ -3,6 +3,8 @@ import iati.core.data
 import json
 import requests
 
+REGISTRY_API_METADATA_BY_DATASET_ID = "https://iatiregistry.org/api/3/action/package_show?id={0}"
+
 
 class Dataset(object):
     """Container class to fetch a dataset."""
@@ -36,7 +38,8 @@ def get_metadata(dataset_id):
     Returns:
         dict: A dictionary containing the data returned by the Registry API.
     """
-    req = requests.get("https://iatiregistry.org/api/3/action/package_show?id={0}".format(dataset_id))
+    req = requests.get(REGISTRY_API_METADATA_BY_DATASET_ID.format(dataset_id))
+
     if not is_response_okay(req):
         raise Exception()
     else:
