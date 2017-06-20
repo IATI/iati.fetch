@@ -33,3 +33,19 @@ class TestDataset(object):
                 ]
             }
         }
+
+    def test_registry_metadata_bad_id(self):
+        """Given an invalid registry ID, an Exception is raised."""
+        pass
+
+    def test_get_dataset(self):
+        """Given an execpted dataset URL, utf-8 encoded text is returned."""
+        pass
+
+    def test_get_dataset_correctly_encoded(self):
+        """Given an execpted dataset URL with non-utf-8 data, utf-8 encoded text is returned."""
+        pass
+
+    def test_get_dataset_bad_url(self):
+        """Given an invalid dataset URL, an Exception is raised."""
+        pass
