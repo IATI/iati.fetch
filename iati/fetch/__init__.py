@@ -26,11 +26,12 @@ class Dataset(object):
         self.dataset = iati.core.data.Dataset(dataset)
 
 
-def get_metadata(dataset_id):
+def get_metadata(dataset_id, registry_api_endpoint=REGISTRY_API_METADATA_BY_DATASET_ID):
     """Get registry metadata for given dataset ID.
 
     Args:
         dataset_id (str): The Registry UUID for the dataset metadata to be returned.
+        registry_api_endpoint (str): The API endpoint URL for obtaining dataset metadata for a given Registry dataset UUID.
 
     Raises:
         Exception: When a HTTP 200 response code is not received.
@@ -38,7 +39,7 @@ def get_metadata(dataset_id):
     Returns:
         dict: A dictionary containing the data returned by the Registry API.
     """
-    req = requests.get(REGISTRY_API_METADATA_BY_DATASET_ID.format(dataset_id))
+    req = requests.get(registry_api_endpoint.format(dataset_id))
 
     if not is_response_okay(req):
         raise Exception()
