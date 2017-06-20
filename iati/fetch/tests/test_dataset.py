@@ -43,7 +43,7 @@ class TestDataset(object):
     def test_get_dataset(self, **kwargs):
         """Given an expected dataset URL, utf-8 encoded text is returned."""
         mock_dataset = pkg_resources.resource_stream(__name__, 'activity-standard-example-annotated.xml').read().decode()
-        mock_dataset_url = 'mock://test.com/{0}'
+        mock_dataset_url = 'mock://test.com/dataset'
         kwargs['mock'].get(mock_dataset_url, text=mock_dataset)
 
         dataset_bytes = iati.fetch.get_dataset(dataset_url=mock_dataset_url)
