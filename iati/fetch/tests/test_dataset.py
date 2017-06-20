@@ -17,7 +17,7 @@ class TestDataset(object):
         sample_dataset.set_dataset()
         assert isinstance(sample_dataset.dataset, iati.core.data.Dataset)
 
-    @requests_mock.Mocker(kw='mock')
+    @requests_mock.mock(kw='mock')
     def test_get_metadata(self, **kwargs):
         """Given a mock registry ID, metadata will be returned.
 
@@ -25,14 +25,16 @@ class TestDataset(object):
           Remove use of live URL in mock metadata.
         """
         mock_metadata = pkg_resources.resource_stream(__name__, 'mock-registry-metadata.json').read().decode()
-        mock_registry_url = iati.fetch.REGISTRY_API_METADATA_BY_DATASET_ID.format('sample')
-        kwargs['mock'].get(mock_registry_url, text=mock_metadata)
-        assert iati.fetch.get_metadata(dataset_id='sample') == {'result': {
-            'resources': [
-                {'url': 'https://www.vsointernational.org/sites/default/files/aasaman_gec.xml'}
-                ]
-            }
-        }
+        mock_registry_url = 'mock://test.com/{0}'
+        kwargs['mock'].get(mock_registry_url.format('sample'), text=mock_metadata)
+        assert iati.fetch.get_metadata(dataset_id='sample',
+                                       registry_api_endpoint=mock_registry_url
+                                       ) == {'result': {
+                                            'resources': [
+                                                {'url': 'https://www.vsointernational.org/sites/default/files/aasaman_gec.xml'}
+                                                ]
+                                            }
+                                        }
 
     def test_registry_metadata_bad_id(self):
         """Given an invalid registry ID, an Exception is raised."""
