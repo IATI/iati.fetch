@@ -39,7 +39,11 @@ class TestDataset(object):
 
     @requests_mock.mock(kw='mock')
     def test_registry_metadata_bad_id(self, **kwargs):
-        """Given an invalid registry ID, an Exception is raised."""
+        """Given an invalid registry ID, an Exception is raised.
+
+        Todo:
+            Refactor to incorporate pending changes to status code exception.
+        """
         mock_registry_url = 'mock://test.com/{0}'
         kwargs['mock'].get(mock_registry_url.format('invalid_id'), status_code=404)
 
