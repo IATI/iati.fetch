@@ -1,5 +1,6 @@
 """A module containing tests for the library functionality to fetch datasets."""
 import iati.fetch
+import pytest
 import pkg_resources
 import requests_mock
 
@@ -36,9 +37,16 @@ class TestDataset(object):
                                             }
                                         }
 
-    def test_registry_metadata_bad_id(self):
+    @requests_mock.mock(kw='mock')
+    def test_registry_metadata_bad_id(self, **kwargs):
         """Given an invalid registry ID, an Exception is raised."""
-        pass
+        mock_registry_url = 'mock://test.com/{0}'
+        kwargs['mock'].get(mock_registry_url.format('invalid_id'), status_code=404)
+
+        with pytest.raises(Exception)as excinfo:
+            iati.fetch.get_metadata(dataset_id='invalid_id',
+                                    registry_api_endpoint=mock_registry_url)
+        assert '' in str(excinfo.value)
 
     def test_get_dataset(self):
         """Given an execpted dataset URL, utf-8 encoded text is returned."""
