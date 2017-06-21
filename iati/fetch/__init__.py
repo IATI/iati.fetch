@@ -38,6 +38,7 @@ def get_metadata(dataset_id, registry_api_endpoint=REGISTRY_API_METADATA_BY_DATA
 
     Returns:
         dict: A dictionary containing the data returned by the Registry API.
+
     """
     req = requests.get(registry_api_endpoint.format(dataset_id))
 
@@ -59,6 +60,7 @@ def get_dataset(dataset_url):
 
     Returns:
         str: The data contained at the dataset_url.
+
     """
     dataset = requests.get(dataset_url)
     if not is_response_okay(dataset):
@@ -78,6 +80,7 @@ def is_response_okay(request):
 
     Todo:
         Delete this function and use builtin requests.status.ok instead.
+
     """
     if request.status_code != 200:
         return False
