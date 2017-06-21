@@ -1,14 +1,14 @@
 """A module containing tests for the library functionality to fetch datasets."""
 import iati.fetch
+import pytest
 import pkg_resources
 import requests_mock
 
 
-@requests_mock.Mocker(kw='mock')
 class TestDataset(object):
     """Container for tests relating fetch.Dataset."""
 
-    def test_fetch_by_dataset_id(self, **kwargs):
+    def test_fetch_by_dataset_id(self):
         """Given a dataset_id, metadata for this dataset will be populated.
 
         Todo:
@@ -18,6 +18,7 @@ class TestDataset(object):
         sample_dataset.set_dataset()
         assert isinstance(sample_dataset.dataset, iati.core.data.Dataset)
 
+    @requests_mock.mock(kw='mock')
     def test_get_metadata(self, **kwargs):
         """Given a mock registry ID, metadata will be returned.
 
@@ -36,10 +37,22 @@ class TestDataset(object):
                                             }
                                         }
 
+    @requests_mock.mock(kw='mock')
     def test_registry_metadata_bad_id(self, **kwargs):
-        """Given an invalid registry ID, an Exception is raised."""
-        pass
+        """Given an invalid registry ID, an Exception is raised.
 
+        Todo:
+            Refactor to incorporate pending changes to status code exception.
+        """
+        mock_registry_url = 'mock://test.com/{0}'
+        kwargs['mock'].get(mock_registry_url.format('invalid_id'), status_code=404)
+
+        with pytest.raises(Exception)as excinfo:
+            iati.fetch.get_metadata(dataset_id='invalid_id',
+                                    registry_api_endpoint=mock_registry_url)
+        assert '' in str(excinfo.value)
+
+    @requests_mock.mock(kw='mock')
     def test_get_dataset(self, **kwargs):
         """Given an expected dataset URL, utf-8 encoded text is returned."""
         mock_dataset = pkg_resources.resource_stream(__name__, 'activity-standard-example-annotated.xml').read().decode()
@@ -54,10 +67,11 @@ class TestDataset(object):
         assert 'iati-activities' in dataset_str
         assert 'iati-activity' in dataset_str
 
-    def test_get_dataset_correctly_encoded(self, **kwargs):
-        """Given an execpted dataset URL with non-utf-8 data, utf-8 encoded text is returned."""
+    def test_get_dataset_correctly_encoded(self):
+        """Given an accepted dataset URL with non-utf-8 data, utf-8 encoded text is returned."""
+        # assert iati.fetch.get_dataset()
         pass
 
-    def test_get_dataset_bad_url(self, **kwargs):
+    def test_get_dataset_bad_url(self):
         """Given an invalid dataset URL, an Exception is raised."""
         pass
