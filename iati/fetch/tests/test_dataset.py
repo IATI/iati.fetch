@@ -55,17 +55,16 @@ class TestDataset(object):
     @requests_mock.mock(kw='mock')
     def test_get_dataset(self, **kwargs):
         """Given an expected dataset URL, utf-8 encoded text is returned."""
-        mock_dataset = pkg_resources.resource_stream(__name__, 'activity-standard-example-annotated.xml').read().decode()
+        mock_dataset = pkg_resources.resource_stream(__name__, 'activity-standard-example-annotated.xml').read().decode('utf-8')
         mock_dataset_url = 'mock://test.com/dataset'
         kwargs['mock'].get(mock_dataset_url, text=mock_dataset)
 
-        dataset_bytes = iati.fetch.get_dataset(dataset_url=mock_dataset_url)
-        dataset_str = dataset_bytes.decode()
+        dataset = iati.fetch.get_dataset(dataset_url=mock_dataset_url)
 
-        assert dataset_bytes
-        assert len(dataset_str.split('\n')) == 353  # File has 353 lines.
-        assert 'iati-activities' in dataset_str
-        assert 'iati-activity' in dataset_str
+        assert dataset
+        assert len(dataset.split('\n')) == 353  # File has 353 lines.
+        assert 'iati-activities' in dataset
+        assert 'iati-activity' in dataset
 
     def test_get_dataset_correctly_encoded(self):
         """Given an accepted dataset URL with non-utf-8 data, utf-8 encoded text is returned."""
