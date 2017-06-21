@@ -66,7 +66,11 @@ def get_dataset(dataset_url):
     if not is_response_okay(dataset):
         raise Exception()
     else:
-        return dataset.text.encode('utf-8')
+        if dataset.encoding == 'utf-8':
+            dataset_text = dataset.text
+        else:
+            dataset_text = dataset.text.encode('utf-8')
+        return dataset_text
 
 
 def is_response_okay(request):
