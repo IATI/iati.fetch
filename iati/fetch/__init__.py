@@ -26,16 +26,6 @@ class Dataset(object):
         self.dataset = iati.core.data.Dataset(dataset)
 
 
-def is_registry_id_valid(self, id):
-    """Given a registry ID, determines whether this ID is valid.
-
-    Raises:
-        Exception: When ID will not produce Registry dataset.
-
-    """
-    # Not sure what to do here...
-
-
 def get_metadata(dataset_id, registry_api_endpoint=REGISTRY_API_METADATA_BY_DATASET_ID):
     """Get registry metadata for given dataset ID.
 

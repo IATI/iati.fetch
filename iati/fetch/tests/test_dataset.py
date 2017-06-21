@@ -53,7 +53,8 @@ class TestDataset(object):
         pass
 
     def test_get_dataset_correctly_encoded(self):
-        """Given an execpted dataset URL with non-utf-8 data, utf-8 encoded text is returned."""
+        """Given an accepted dataset URL with non-utf-8 data, utf-8 encoded text is returned."""
+        # assert iati.fetch.get_dataset()
         pass
 
     def test_get_dataset_bad_url(self):
