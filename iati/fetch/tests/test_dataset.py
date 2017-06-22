@@ -47,7 +47,7 @@ class TestDataset(object):
         mock_registry_url = 'mock://test.com/{0}'
         responses.add(responses.GET, mock_registry_url.format('invalid_id'), status=404)
 
-        with pytest.raises(Exception)as excinfo:
+        with pytest.raises(Exception) as excinfo:
             iati.fetch.get_metadata(dataset_id='invalid_id',
                                     registry_api_endpoint=mock_registry_url)
         assert '' in str(excinfo.value)
