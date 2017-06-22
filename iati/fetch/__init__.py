@@ -19,11 +19,16 @@ class Dataset(object):
         self.dataset = None
 
     def set_dataset(self):
-        """Set dataset from the dataset ID."""
+        """Set dataset from the dataset ID.
+
+        Todo:
+            Create a dataset using `dataset` (rather than `dataset_bytes`) when https://github.com/IATI/iati.core/issues/24 is resolved.
+        """
         registry_metadata = get_metadata(self.dataset_id)
         dataset_url = registry_metadata['result']['resources'][0]['url']
         dataset = get_dataset(dataset_url)
-        self.dataset = iati.core.data.Dataset(dataset)
+        dataset_bytes = bytes(dataset, encoding='utf-8')
+        self.dataset = iati.core.data.Dataset(dataset_bytes)
 
 
 def get_metadata(dataset_id, registry_api_endpoint=REGISTRY_API_METADATA_BY_DATASET_ID):
@@ -66,10 +71,11 @@ def get_dataset(dataset_url):
     if not is_response_okay(dataset):
         raise Exception()
     else:
-        if dataset.encoding == 'utf-8':
-            dataset_text = dataset.text
-        else:
+        if isinstance(dataset.encoding, bytes):
             dataset_text = dataset.text.encode('utf-8')
+        else:
+            dataset_text = dataset.text
+
         return dataset_text
 
 
