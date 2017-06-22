@@ -3,11 +3,13 @@ import iati.fetch
 import pytest
 import pkg_resources
 import requests_mock
+import responses
 
 
 class TestDataset(object):
     """Container for tests relating fetch.Dataset."""
 
+    @pytest.mark.withoutresponses
     def test_fetch_by_dataset_id(self):
         """Given a dataset_id, metadata for this dataset will be populated.
 
@@ -18,18 +20,17 @@ class TestDataset(object):
         sample_dataset.set_dataset()
         assert isinstance(sample_dataset.dataset, iati.core.data.Dataset)
 
-    @requests_mock.mock(kw='mock')
-    def test_get_metadata(self, **kwargs):
+    def test_get_metadata(self):
         """Given a mock registry ID, metadata will be returned.
 
         Todo:
           Remove use of live URL in mock metadata.
         """
         mock_metadata = pkg_resources.resource_stream(__name__, 'mock-registry-metadata.json').read().decode()
-        mock_registry_url = 'mock://test.com/{0}'
-        kwargs['mock'].get(mock_registry_url.format('sample'), text=mock_metadata)
+        mock_registry_url = 'http://test.com/sample'
+        responses.add(responses.GET, mock_registry_url, body=mock_metadata)
         assert iati.fetch.get_metadata(dataset_id='sample',
-                                       registry_api_endpoint=mock_registry_url
+                                       registry_api_endpoint='http://test.com/{0}'
                                        ) == {'result': {
                                             'resources': [
                                                 {'url': 'https://www.vsointernational.org/sites/default/files/aasaman_gec.xml'}
