@@ -52,11 +52,7 @@ class TestDataset(object):
         assert '' in str(excinfo.value)
 
     def test_get_dataset(self):
-        """Given an expected dataset URL, utf-8 encoded text is returned.
-
-        Todo:
-            Use responses instead of requests_mock
-        """
+        """Given an expected dataset URL, utf-8 encoded text is returned."""
         mock_dataset = pkg_resources.resource_stream(__name__, 'activity-standard-example-annotated.xml').read().decode('utf-8')
         mock_dataset_url = 'http://test.com/dataset'
         responses.add(responses.GET, mock_dataset_url, body=mock_dataset)
