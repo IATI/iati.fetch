@@ -2,7 +2,6 @@
 import iati.fetch
 import pytest
 import pkg_resources
-import requests_mock
 import responses
 
 
@@ -52,16 +51,15 @@ class TestDataset(object):
                                     registry_api_endpoint=mock_registry_url)
         assert '' in str(excinfo.value)
 
-    @requests_mock.mock(kw='mock')
-    def test_get_dataset(self, **kwargs):
+    def test_get_dataset(self):
         """Given an expected dataset URL, utf-8 encoded text is returned.
 
         Todo:
             Use responses instead of requests_mock
         """
         mock_dataset = pkg_resources.resource_stream(__name__, 'activity-standard-example-annotated.xml').read().decode('utf-8')
-        mock_dataset_url = 'mock://test.com/dataset'
-        kwargs['mock'].get(mock_dataset_url, text=mock_dataset)
+        mock_dataset_url = 'http://test.com/dataset'
+        responses.add(responses.GET, mock_dataset_url, body=mock_dataset)
 
         dataset = iati.fetch.get_dataset(dataset_url=mock_dataset_url)
 
