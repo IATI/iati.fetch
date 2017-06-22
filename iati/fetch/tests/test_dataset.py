@@ -38,15 +38,14 @@ class TestDataset(object):
                                             }
                                         }
 
-    @requests_mock.mock(kw='mock')
-    def test_registry_metadata_bad_id(self, **kwargs):
+    def test_registry_metadata_bad_id(self):
         """Given an invalid registry ID, an Exception is raised.
 
         Todo:
             Refactor to incorporate pending changes to status code exception.
         """
         mock_registry_url = 'mock://test.com/{0}'
-        kwargs['mock'].get(mock_registry_url.format('invalid_id'), status_code=404)
+        responses.add(responses.GET, mock_registry_url.format('invalid_id'), status=404)
 
         with pytest.raises(Exception)as excinfo:
             iati.fetch.get_metadata(dataset_id='invalid_id',
@@ -55,7 +54,11 @@ class TestDataset(object):
 
     @requests_mock.mock(kw='mock')
     def test_get_dataset(self, **kwargs):
-        """Given an expected dataset URL, utf-8 encoded text is returned."""
+        """Given an expected dataset URL, utf-8 encoded text is returned.
+
+        Todo:
+            Use responses instead of requests_mock
+        """
         mock_dataset = pkg_resources.resource_stream(__name__, 'activity-standard-example-annotated.xml').read().decode('utf-8')
         mock_dataset_url = 'mock://test.com/dataset'
         kwargs['mock'].get(mock_dataset_url, text=mock_dataset)
