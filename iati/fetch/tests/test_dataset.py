@@ -2,12 +2,13 @@
 import iati.fetch
 import pytest
 import pkg_resources
-import requests_mock
+import responses
 
 
 class TestDataset(object):
     """Container for tests relating fetch.Dataset."""
 
+    @pytest.mark.withoutresponses
     def test_fetch_by_dataset_id(self):
         """Given a dataset_id, metadata for this dataset will be populated.
 
@@ -18,18 +19,17 @@ class TestDataset(object):
         sample_dataset.set_dataset()
         assert isinstance(sample_dataset.dataset, iati.core.data.Dataset)
 
-    @requests_mock.mock(kw='mock')
-    def test_get_metadata(self, **kwargs):
+    def test_get_metadata(self):
         """Given a mock registry ID, metadata will be returned.
 
         Todo:
           Remove use of live URL in mock metadata.
         """
         mock_metadata = pkg_resources.resource_stream(__name__, 'mock-registry-metadata.json').read().decode()
-        mock_registry_url = 'mock://test.com/{0}'
-        kwargs['mock'].get(mock_registry_url.format('sample'), text=mock_metadata)
+        mock_registry_url = 'http://test.com/sample'
+        responses.add(responses.GET, mock_registry_url, body=mock_metadata)
         assert iati.fetch.get_metadata(dataset_id='sample',
-                                       registry_api_endpoint=mock_registry_url
+                                       registry_api_endpoint='http://test.com/{0}'
                                        ) == {'result': {
                                             'resources': [
                                                 {'url': 'https://www.vsointernational.org/sites/default/files/aasaman_gec.xml'}
@@ -37,27 +37,25 @@ class TestDataset(object):
                                             }
                                         }
 
-    @requests_mock.mock(kw='mock')
-    def test_registry_metadata_bad_id(self, **kwargs):
+    def test_registry_metadata_bad_id(self):
         """Given an invalid registry ID, an Exception is raised.
 
         Todo:
             Refactor to incorporate pending changes to status code exception.
         """
         mock_registry_url = 'mock://test.com/{0}'
-        kwargs['mock'].get(mock_registry_url.format('invalid_id'), status_code=404)
+        responses.add(responses.GET, mock_registry_url.format('invalid_id'), status=404)
 
-        with pytest.raises(Exception)as excinfo:
+        with pytest.raises(Exception) as excinfo:
             iati.fetch.get_metadata(dataset_id='invalid_id',
                                     registry_api_endpoint=mock_registry_url)
         assert '' in str(excinfo.value)
 
-    @requests_mock.mock(kw='mock')
-    def test_get_dataset(self, **kwargs):
+    def test_get_dataset(self):
         """Given an expected dataset URL, utf-8 encoded text is returned."""
         mock_dataset = pkg_resources.resource_stream(__name__, 'activity-standard-example-annotated.xml').read().decode('utf-8')
-        mock_dataset_url = 'mock://test.com/dataset'
-        kwargs['mock'].get(mock_dataset_url, text=mock_dataset)
+        mock_dataset_url = 'http://test.com/dataset'
+        responses.add(responses.GET, mock_dataset_url, body=mock_dataset)
 
         dataset = iati.fetch.get_dataset(dataset_url=mock_dataset_url)
 

@@ -10,4 +10,5 @@
 # testing tools
 pytest==3.0.5
 pytest-cov==2.4.0
-requests_mock
+pytest-responses==0.1.0
+responses==0.5.1
