@@ -9,6 +9,15 @@ REGISTRY_API_METADATA_BY_DATASET_ID = "https://iatiregistry.org/api/3/action/pac
 class Dataset(object):
     """Container class to fetch a dataset."""
 
+    def _decorator(self):
+        """Return decorated __init__()."""
+        def call_set_dataset_automatically(self, dataset_id):
+            """Call set_dataset to set self.dataset variableupon instantiation."""
+            self.dataset_id = dataset_id
+            self.set_dataset()
+        return call_set_dataset_automatically
+
+    @_decorator
     def __init__(self, dataset_id):
         """Fetch a dataset by registry dataset ID.
 
