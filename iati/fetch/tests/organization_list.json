@@ -1,0 +1,8 @@
+{
+    "help": "https://iatiregistry.org/api/3/action/help_show?name=organization_list",
+    "success": true,
+    "result": [
+      "mock_iati_publisher_name",
+      "another_mock_publisher"
+    ]
+}

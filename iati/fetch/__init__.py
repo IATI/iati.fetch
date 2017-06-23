@@ -4,6 +4,7 @@ import json
 import requests
 
 REGISTRY_API_METADATA_BY_DATASET_ID = "https://iatiregistry.org/api/3/action/package_show?id={0}"
+REGISTRY_API_LIST_PUBLISHERS = "https://iatiregistry.org/api/action/organization_list"
 
 
 class Dataset(object):
@@ -97,3 +98,25 @@ def is_response_okay(request):
         return False
     else:
         return True
+
+
+def get_publishers(registry_api_endpoint=REGISTRY_API_LIST_PUBLISHERS):
+    """Get a list of publishers who are publishing to the IATI Registry.
+
+    Args:
+        registry_api_endpoint (str): The API endpoint URL for obtaining a list of all organisations publishing to the IATI Registry.
+
+    Raises:
+        Exception: When a HTTP 200 response code is not received.
+
+    Returns:
+        list: List of Registry publisher IDs.
+    """
+
+    req = requests.get(registry_api_endpoint)
+
+    if not is_response_okay(req):
+        raise Exception()
+    else:
+        registry_result = req.json()
+        return registry_result['result']
