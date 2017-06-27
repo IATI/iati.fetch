@@ -4,7 +4,7 @@ import pytest
 import pkg_resources
 import responses
 
-MOCK_REGISTRY_URL = 'http://test.com/{0}'
+MOCK_REGISTRY_URL = 'http://iati_mock_registry_url.test/{0}'
 
 
 class TestDataset(object):
