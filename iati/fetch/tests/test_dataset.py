@@ -105,5 +105,7 @@ class TestDataset(object):
         with pytest.raises(Exception) as excinfo:
             iati.fetch.get_publishers(registry_api_endpoint=mock_publishers_not_json)
 
-        assert ((excinfo.typename == 'ValueError' and str(excinfo.value) == 'No JSON object could be decoded')  # Python version < 3.5
-                or (excinfo.typename == 'JSONDecodeError' and str(excinfo.value) == 'Expecting value: line 1 column 1 (char 0)'))  # Python version >= 3.5
+        assert (excinfo.typename == 'ValueError'  # Python version < 3.5
+                or excinfo.typename == 'JSONDecodeError')  # Python version >= 3.5
+        assert (str(excinfo.value) == 'No JSON object could be decoded'  # Python version < 3.4
+                or str(excinfo.value) == 'Expecting value: line 1 column 1 (char 0)')  # Python version >= 3.4
