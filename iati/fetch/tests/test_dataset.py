@@ -96,10 +96,14 @@ class TestDataset(object):
         assert '' in str(excinfo.value)
 
     def test_get_publishers_not_json(self):
+        """Given a non-JSON response, an exception is raised.
+        Note that the exception type will vary between Python versions (ValueError < v3.5; json.decoder.JSONDecodeError >= v3.5).
+        """
         mock_publishers_not_json = 'http://test.com/publishers/not_json'
         responses.add(responses.GET, mock_publishers_not_json, body='This is not a JSON string.')
 
-        with pytest.raises(json.decoder.JSONDecodeError) as excinfo:
+        with pytest.raises(Exception) as excinfo:
             iati.fetch.get_publishers(registry_api_endpoint=mock_publishers_not_json)
 
-        assert 'Expecting value' in str(excinfo.value)
+        assert ((excinfo.typename == 'ValueError' and str(excinfo.value) == 'No JSON object could be decoded')  # Python version < 3.5
+                or (excinfo.typename == 'JSONDecodeError' and str(excinfo.value) == 'Expecting value: line 1 column 1 (char 0)'))  # Python version >= 3.5
