@@ -9,15 +9,6 @@ REGISTRY_API_METADATA_BY_DATASET_ID = "https://iatiregistry.org/api/3/action/pac
 class Dataset(object):
     """Container class to fetch a dataset."""
 
-    def _decorator(self):
-        """Return decorated __init__()."""
-        def call_set_dataset_automatically(self, dataset_id):
-            """Call set_dataset to set self.dataset variableupon instantiation."""
-            self.dataset_id = dataset_id
-            self.set_dataset()
-        return call_set_dataset_automatically
-
-    @_decorator
     def __init__(self, dataset_id):
         """Fetch a dataset by registry dataset ID.
 
@@ -25,7 +16,7 @@ class Dataset(object):
             dataset_id (str): The Registry UUID for the dataset.
         """
         self.dataset_id = dataset_id
-        self.dataset = None
+        self.dataset = self.set_dataset()
 
     def set_dataset(self):
         """Set dataset from the dataset ID.
@@ -38,7 +29,8 @@ class Dataset(object):
         dataset = get_dataset(dataset_url)
 
         dataset_var_to_be_removed = dataset.replace('encoding=\'utf-8\'', '')
-        self.dataset = iati.core.data.Dataset(dataset_var_to_be_removed)
+        dataset = iati.core.data.Dataset(dataset_var_to_be_removed)
+        return dataset
 
 
 def get_metadata(dataset_id, registry_api_endpoint=REGISTRY_API_METADATA_BY_DATASET_ID):
