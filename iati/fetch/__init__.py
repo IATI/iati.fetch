@@ -16,7 +16,8 @@ class Dataset(object):
             dataset_id (str): The Registry UUID for the dataset.
         """
         self.dataset_id = dataset_id
-        self.dataset = self.set_dataset()
+        self.dataset = None
+        self.set_dataset()
 
     def set_dataset(self):
         """Set dataset from the dataset ID.
@@ -29,8 +30,7 @@ class Dataset(object):
         dataset = get_dataset(dataset_url)
 
         dataset_var_to_be_removed = dataset.replace('encoding=\'utf-8\'', '')
-        dataset = iati.core.data.Dataset(dataset_var_to_be_removed)
-        return dataset
+        self.dataset = iati.core.data.Dataset(dataset_var_to_be_removed)
 
 
 def get_metadata(dataset_id, registry_api_endpoint=REGISTRY_API_METADATA_BY_DATASET_ID):
