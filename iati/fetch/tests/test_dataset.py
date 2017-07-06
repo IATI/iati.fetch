@@ -16,7 +16,6 @@ class TestDataset(object):
           Remove use of live dataset_id.
         """
         sample_dataset = iati.fetch.Dataset(dataset_id='43aa0616-58a4-4d16-b0a9-1181e3871827')
-        sample_dataset.set_dataset()
         assert isinstance(sample_dataset.dataset, iati.core.data.Dataset)
 
     def test_get_metadata(self):
