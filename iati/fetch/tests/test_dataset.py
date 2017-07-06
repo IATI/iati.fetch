@@ -4,6 +4,8 @@ import pytest
 import pkg_resources
 import responses
 
+MOCK_REGISTRY_URL = 'http://iati_mock_registry_url.test/{0}'
+
 
 class TestDataset(object):
     """Container for tests relating fetch.Dataset."""
@@ -25,10 +27,10 @@ class TestDataset(object):
           Remove use of live URL in mock metadata.
         """
         mock_metadata = pkg_resources.resource_stream(__name__, 'mock-registry-metadata.json').read().decode()
-        mock_registry_url = 'http://test.com/sample'
+        mock_registry_url = MOCK_REGISTRY_URL.format('sample')
         responses.add(responses.GET, mock_registry_url, body=mock_metadata)
         assert iati.fetch.get_metadata(dataset_id='sample',
-                                       registry_api_endpoint='http://test.com/{0}'
+                                       registry_api_endpoint=MOCK_REGISTRY_URL
                                        ) == {'result': {
                                             'resources': [
                                                 {'url': 'https://www.vsointernational.org/sites/default/files/aasaman_gec.xml'}
@@ -42,8 +44,7 @@ class TestDataset(object):
         Todo:
             Refactor to incorporate pending changes to status code exception.
         """
-        mock_registry_url = 'mock://test.com/{0}'
-        responses.add(responses.GET, mock_registry_url.format('invalid_id'), status=404)
+        responses.add(responses.GET, MOCK_REGISTRY_URL.format('invalid_id'), status=404)
 
         with pytest.raises(Exception) as excinfo:
             iati.fetch.get_metadata(dataset_id='invalid_id',
@@ -53,7 +54,7 @@ class TestDataset(object):
     def test_get_dataset(self):
         """Given an expected dataset URL, utf-8 encoded text is returned."""
         mock_dataset = pkg_resources.resource_stream(__name__, 'activity-standard-example-annotated.xml').read().decode('utf-8')
-        mock_dataset_url = 'http://test.com/dataset'
+        mock_dataset_url = MOCK_REGISTRY_URL.format('dataset')
         responses.add(responses.GET, mock_dataset_url, body=mock_dataset)
 
         dataset = iati.fetch.get_dataset(dataset_url=mock_dataset_url)
