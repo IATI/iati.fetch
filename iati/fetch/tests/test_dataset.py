@@ -65,10 +65,19 @@ class TestDataset(object):
         assert 'iati-activity' in dataset
 
     def test_get_dataset_correctly_encoded(self):
-        """Given an accepted dataset URL with non-utf-8 data, utf-8 encoded text is returned."""
-        # assert iati.fetch.get_dataset()
+        """Given an accepted dataset URL with non-utf-8 data, utf-8 encoded text is returned.
+
+        Todo:
+            Decide if needed based on guidance defined in the standard and
+            requests module decoding capabilties.
+        """
         pass
 
     def test_get_dataset_bad_url(self):
         """Given an invalid dataset URL, an Exception is raised."""
-        pass
+        mock_dataset_url = 'http://test.com/bad_url'
+        responses.add(responses.GET, mock_dataset_url, status=404)
+
+        with pytest.raises(Exception) as excinfo:
+            iati.fetch.get_dataset(dataset_url=mock_dataset_url)
+        assert '' in str(excinfo.value)
