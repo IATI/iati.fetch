@@ -18,6 +18,7 @@ class Dataset(object):
         """
         self.dataset_id = dataset_id
         self.dataset = None
+        self.set_dataset()
 
     def set_dataset(self):
         """Set dataset from the dataset ID.
