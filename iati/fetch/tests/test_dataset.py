@@ -76,7 +76,7 @@ class TestDataset(object):
 
     def test_get_dataset_bad_url(self):
         """Given an invalid dataset URL, an Exception is raised."""
-        mock_dataset_url = 'http://test.com/bad_url'
+        mock_dataset_url = MOCK_REGISTRY_URL.format('bad_url')
         responses.add(responses.GET, mock_dataset_url, status=404)
 
         with pytest.raises(Exception) as excinfo:
@@ -86,7 +86,7 @@ class TestDataset(object):
     def test_get_publishers(self):
         """Result of iati.fetch.get_publishers() will be a list and contain expected results."""
         mock_publishers_response = pkg_resources.resource_stream(__name__, 'organization_list.json').read().decode('utf-8')
-        mock_publishers_url = 'http://test.com/publishers'
+        mock_publishers_url = MOCK_REGISTRY_URL.format('publishers')
         responses.add(responses.GET, mock_publishers_url, body=mock_publishers_response)
 
         publishers = iati.fetch.get_publishers(mock_publishers_url)
@@ -96,7 +96,7 @@ class TestDataset(object):
 
     def test_get_publishers_bad_url(self):
         """Given a bad URL is passed into iati.fetch.get_publishers(), an Exception is raised."""
-        mock_publishers_bad_url = 'http://test.com/bad_publishers_url'
+        mock_publishers_bad_url = MOCK_REGISTRY_URL.format('bad_publishers_url')
         responses.add(responses.GET, mock_publishers_bad_url, status=404)
 
         with pytest.raises(Exception) as excinfo:
@@ -108,7 +108,7 @@ class TestDataset(object):
         """Given a non-JSON response, an exception is raised.
         Note that the exception type will vary between Python versions (ValueError < v3.5; json.decoder.JSONDecodeError >= v3.5).
         """
-        mock_publishers_not_json = 'http://test.com/publishers/not_json'
+        mock_publishers_not_json = MOCK_REGISTRY_URL.format('not_json')
         responses.add(responses.GET, mock_publishers_not_json, body='This is not a JSON string.')
 
         with pytest.raises(Exception) as excinfo:
