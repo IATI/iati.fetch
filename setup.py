@@ -9,7 +9,7 @@ setup(
     url='http://iatistandard.org/',
     packages = find_packages(exclude='iati/fetch/tests'),
     install_requires = [
-        'iati.core==0.1dev',
+        'iati.core==0.0.1.dev0',
         'requests'
         ],
     dependency_links=['https://github.com/IATI/iati.core/tarball/master#egg=iati.core-0.1dev'],
