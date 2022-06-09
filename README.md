@@ -1,3 +1,9 @@
+# _NOTE_
+
+## iati.fetch is Deprecated and Archived
+
+- This repository is Deprecated, Archived, and no longer maintained by IATI
+
 # iati.fetch
 
 The iati.fetch Python module.
